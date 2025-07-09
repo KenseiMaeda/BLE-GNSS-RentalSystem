@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "380153233269",
+    "firebase_url": "https://beaconmanager-405e2-default-rtdb.firebaseio.com",
+    "project_id": "beaconmanager-405e2",
+    "storage_bucket": "beaconmanager-405e2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:380153233269:android:6e761e2f139bcfc8169d3c",
+        "android_client_info": {
+          "package_name": "com.example.ble"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACTHsWv37UkTgMunwXfc7V7vCu_f60BcM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
