@@ -19,6 +19,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="マップを開く" />
+    <Button
+        android:id="@+id/btnOpenRental"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="貸出/返却画面を開く"
+        android:layout_marginTop="8dp" />
 </LinearLayout>
 
 

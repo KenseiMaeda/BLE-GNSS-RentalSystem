@@ -1,15 +1,32 @@
+# Java & Kotlin build artifacts
+/build/
+*.class
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE 設定（Android Studio）
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+*.ipr
+*.iws
+
+# OS 不要ファイル
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+Thumbs.db
+
+# Keystore や個人ファイル（絶対含めない）
+*.jks
+*.keystore
+
+# Firebase 機密ファイル
+google-services.json
+
+# ローカル設定ファイル（端末パスが含まれる）
 local.properties
+
+# キャッシュ/一時ファイル
+/captures/
+/*.log

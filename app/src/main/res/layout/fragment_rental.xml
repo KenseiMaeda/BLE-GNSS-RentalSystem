@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="⏱️ 00:00:00"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/editBikeNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="自転車ナンバーを入力 (例: TX-001)"
+        android:inputType="text"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnSearchBike"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🔍 自転車を検索"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnLend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🚲 貸出する"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnReturn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🔙 返却する"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/textStatus"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="ステータスログがここに表示されます"
+        android:textSize="16sp"
+        android:scrollbars="vertical"
+        android:padding="8dp"
+        android:background="#EEEEEE" />
+
+</LinearLayout>

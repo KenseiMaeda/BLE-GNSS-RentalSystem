@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/textBeaconStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📡 ビーコンを探しています..."
+            android:textSize="18sp"
+            android:paddingBottom="16dp" />
+
+        <EditText
+            android:id="@+id/editBikeNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="自転車ナンバーを入力"
+            android:inputType="text"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btnSearchBike"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="検索"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/textLockNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🔒 ロック番号: 未検索"
+            android:textSize="16sp"
+            android:paddingBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnLend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="貸出"
+            android:enabled="false" />
+
+        <Button
+            android:id="@+id/btnReturn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="返却"
+            android:enabled="false"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/textTimer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⏱ 経過時間: 00:00:00"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:typeface="monospace"
+            android:paddingTop="32dp"
+            android:gravity="center" />
+    </LinearLayout>
+</ScrollView>

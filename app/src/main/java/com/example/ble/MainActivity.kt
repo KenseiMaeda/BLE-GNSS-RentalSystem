@@ -19,8 +19,6 @@ import java.util.Locale
 import android.content.Intent
 import android.widget.Button
 
-
-
 class MainActivity : AppCompatActivity(), BeaconConsumer {
 
     private lateinit var beaconManager: BeaconManager
@@ -48,9 +46,12 @@ class MainActivity : AppCompatActivity(), BeaconConsumer {
             val intent = Intent(this, MapActivity::class.java)
             startActivity(intent)
         }
+        // レンタル画面へ遷移するボタンの処理
+        findViewById<Button>(R.id.btnOpenRental).setOnClickListener {
+            val intent = Intent(this, RentalActivity::class.java)
+            startActivity(intent)
+        }
     }
-
-    /** 🔻 onCreate の外に配置する関数たち 🔻 */
 
     private fun checkPermissions() {
         val permissions = mutableListOf(
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity(), BeaconConsumer {
             if (beacons.isNotEmpty()) {
                 val builder = StringBuilder()
                 val database = FirebaseDatabase.getInstance("https://beaconmanager-405e2-default-rtdb.firebaseio.com/")
-                val logRef = database.getReference("beacon_logs/receiver_01")
+                val logRef = database.getReference("beacon_logs/receiver_01").limitToLast(1)
 
                 for (beacon in beacons) {
                     val uuid = beacon.id1.toString()
@@ -97,26 +98,6 @@ class MainActivity : AppCompatActivity(), BeaconConsumer {
                     val log = "[$timeStr] $name - RSSI: ${beacon.rssi}"
                     builder.appendLine(log)
                     Log.d("Beacon", log)
-
-                    val logData = mapOf(
-                        "uuid" to uuid,
-                        "major" to major,
-                        "minor" to minor,
-                        "rssi" to beacon.rssi,
-                        "tx_power" to beacon.txPower,
-                        "mac" to beacon.bluetoothAddress,
-                        "scanner" to "receiver_01",
-                        "name" to name,
-                        "time" to timeStr
-                    )
-
-                    logRef.push().setValue(logData)
-                        .addOnSuccessListener {
-                            Log.d("Firebase", "送信成功")
-                        }
-                        .addOnFailureListener {
-                            Log.e("Firebase", "送信失敗", it)
-                        }
                 }
 
                 runOnUiThread {
