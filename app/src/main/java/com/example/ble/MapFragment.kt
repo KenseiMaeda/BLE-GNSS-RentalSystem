@@ -3,25 +3,29 @@ package com.example.ble
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import android.os.Handler
-import android.os.Looper
 import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import androidx.appcompat.app.AppCompatActivity
 
-class MapActivity : AppCompatActivity(), OnMapReadyCallback {
+
+class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
-    private var previousGreenBeaconName: String? = null
     private var currentGreenMarker: Marker? = null
     private val handler = Handler(Looper.getMainLooper())
 
@@ -46,12 +50,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         "天久保池" to LatLng(36.100705339486716, 140.10607356710554)
     )
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_map)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        return inflater.inflate(R.layout.fragment_map, container, false)
+    }
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
+        mapFragment?.getMapAsync(this)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -61,7 +68,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val center = LatLng(36.106, 140.101)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 15f))
 
-        // ① 全ビーコンを赤マーカーで表示（固定）
+        // すべてのビーコンを赤で描画
         for ((name, location) in beaconNameToLocation) {
             map.addMarker(
                 MarkerOptions()
@@ -71,63 +78,52 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         }
 
-        // ② 最新ビーコン監視ループ（3秒ごと）
+        // ビーコン更新監視（3秒ごと）
         handler.post(object : Runnable {
             override fun run() {
-                val prefs = getSharedPreferences("beacon_prefs", MODE_PRIVATE)
-                val latestBeaconName = prefs.getString("latest_beacon_name", null)
-                val lastUpdateTime = prefs.getLong("latest_beacon_time", 0L)
-                val currentTime = System.currentTimeMillis()
-
-                if (latestBeaconName != null && beaconNameToLocation.containsKey(latestBeaconName)) {
-                    val location = beaconNameToLocation[latestBeaconName]
-
-                    if (currentTime - lastUpdateTime <= 10_000) {
-                        // → 10秒以内：緑マーカー更新
-                        currentGreenMarker?.remove()
-                        currentGreenMarker = map.addMarker(
-                            MarkerOptions()
-                                .position(location!!)
-                                .title("📡 最新ビーコン: $latestBeaconName")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                        )
-                    } else {
-                        // → 10秒以上経過：緑マーカー削除して何も表示しない（または赤に戻す）
-                        currentGreenMarker?.remove()
-                        currentGreenMarker = null
-                        Log.i("MapActivity", "⏱️ ビーコン更新が10秒以上なし。マーカーを非表示にしました")
-                    }
+                if (!isAdded) {
+                    handler.postDelayed(this, 3000)
+                    return
                 }
 
-                handler.postDelayed(this, 3000) // 3秒ごと更新
+                val activity = activity as? MainActivity
+                val beacon = activity?.latestBeacon
+                val beaconName = beacon?.let {
+                    BeaconRegistry.resolveName(it.id1.toString(), it.id2.toInt(), it.id3.toInt())
+                }
+
+                if (beaconName != null && beaconNameToLocation.containsKey(beaconName)) {
+                    val location = beaconNameToLocation[beaconName]
+                    currentGreenMarker?.remove()
+                    currentGreenMarker = map.addMarker(
+                        MarkerOptions()
+                            .position(location!!)
+                            .title("📡 最新ビーコン: $beaconName")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    )
+                }
+
+                handler.postDelayed(this, 3000)
             }
         })
     }
 
-
-
-    private fun getLatestBeaconNameFromLocal(): String {
-        return intent.getStringExtra("latest_beacon_name") ?: ""
+    override fun onDestroyView() {
+        super.onDestroyView()
+        handler.removeCallbacksAndMessages(null)
     }
 
-
     private fun enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
             map.isMyLocationEnabled = true
         } else {
             ActivityCompat.requestPermissions(
-                this,
+                requireActivity(),
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 1001
             )
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1001 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            enableMyLocation()
         }
     }
 }

@@ -1,0 +1,12 @@
+<!-- res/menu/bottom_nav_menu.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_rental"
+        android:title="レンタル" />
+    <item
+        android:id="@+id/nav_map"
+        android:title="マップ" />
+    <item
+        android:id="@+id/nav_log"
+        android:title="ログ" />
+</menu>

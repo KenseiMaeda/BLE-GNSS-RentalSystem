@@ -38,7 +38,7 @@
             </intent-filter>
         </activity>
         <!-- 👇 これを追加 -->
-        <activity android:name=".MapActivity" />
+        <activity android:name=".MapFragment" />
         <activity android:name=".RentalActivity" />
     </application>
 </manifest>

@@ -76,6 +76,7 @@ dependencies {
 
     // ✅ google maps api
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation(libs.material)
 
 
     testImplementation(libs.junit)
